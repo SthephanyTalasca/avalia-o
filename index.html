@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avaliação de Reunião (Local)</title>
+    <title>Avaliação de Reunião (Local - Gemini Pro)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,13 +29,13 @@
     <div class="container mx-auto p-4 md:p-8">
         <header class="text-center mb-8">
             <h1 class="text-4xl font-bold text-primary">Avaliação de Reunião</h1>
-            <p class="text-lg text-gray-600 mt-2">Versão Local (Sem Servidor)</p>
+            <p class="text-lg text-gray-600 mt-2">Versão Local (Modelo Gemini Pro)</p>
         </header>
 
         <main>
-            <div class="bg-yellow-50 p-4 rounded-lg shadow-sm border border-yellow-200 mb-6 text-center">
-                <p class="text-sm text-yellow-800 font-bold">⚠️ ATENÇÃO:</p>
-                <p class="text-xs text-yellow-700">Como você não está usando servidor (Vercel), a chave da API deve ser inserida no código abaixo ou no campo (opcional) se eu tivesse criado um.</p>
+            <div class="bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-200 mb-6 text-center">
+                <p class="text-sm text-blue-800 font-bold">⚠️ INSTRUÇÃO:</p>
+                <p class="text-xs text-blue-700">Abra este arquivo no bloco de notas e cole sua chave onde diz "COLE_SUA_API_KEY_AQUI".</p>
             </div>
 
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200">
@@ -104,7 +104,6 @@
     // CONFIGURAÇÃO MANUAL - COLOQUE SUA CHAVE AQUI
     // =================================================================
     const GOOGLE_API_KEY = "AIzaSyCExjPtB-AaKINmNUuXq7UFmHgyDui16So"; 
-    // Exemplo: const GOOGLE_API_KEY = "AIzaSyD...";
     // =================================================================
 
     const csNameInput = document.getElementById('cs-name-input');
@@ -200,7 +199,6 @@
     // LÓGICA DE ANÁLISE (DIRETO NO NAVEGADOR)
     // ==========================================
     async function handleAnalysis() {
-        // 1. Validação da Chave
         if (!GOOGLE_API_KEY || GOOGLE_API_KEY === "COLE_SUA_API_KEY_AQUI") {
             alert("ERRO: Você esqueceu de configurar a API KEY no código HTML.");
             return;
@@ -223,7 +221,6 @@
 
             if (!combinedTranscript) throw new Error("Sem texto para analisar.");
 
-            // 3. Prompt e Schema
             const schema = { type: "OBJECT", properties: { "notaGeral": { "type": "NUMBER" }, "evaluation": { type: "ARRAY", items: { type: "OBJECT", properties: { "criterio": { "type": "STRING" }, "nota": { "type": "NUMBER" }, "justificativa": { "type": "STRING" } }, required: ["criterio", "nota", "justificativa"] } }, "speakingTime": { type: "OBJECT", properties: { "cs": { "type": "NUMBER" }, "client": { "type": "NUMBER" } }, required: ["cs", "client"] }, "profileAnalysis": { type: "OBJECT", properties: { "profile": { "type": "STRING" }, "handling": { "type": "STRING" }, "suggestions": { "type": "STRING" } }, required: ["profile", "handling", "suggestions"] }, "summary": { type: "OBJECT", properties: { "geral": { "type": "STRING" }, "specificErrors": { "type": "ARRAY", "items": { "type": "STRING" } }, "sugestoes": { "type": "ARRAY", items: { "type": "STRING" } } }, required: ["geral", "specificErrors", "sugestoes"] }, "cancellationAlert": { type: "OBJECT", properties: { "risk": { "type": "BOOLEAN" }, "reason": { "type": "STRING" } }, required: ["risk", "reason"] }, "meetingHighlight": { "type": "STRING" }, "opportunities": { type: "ARRAY", items: { type: "OBJECT", properties: { "product": { "type": "STRING" }, "reason": { "type": "STRING" } }, required: ["product", "reason"] } } }, required: ["notaGeral", "evaluation", "speakingTime", "profileAnalysis", "summary", "cancellationAlert", "meetingHighlight", "opportunities"] };
             
             const prompt = `
@@ -235,8 +232,8 @@
                 ${combinedTranscript}
             `;
 
-            // 4. Chamada Direta ao Google
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
+            // ### MUDANÇA AQUI: Trocado para 'gemini-pro' ###
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GOOGLE_API_KEY}`;
             
             const response = await fetch(url, {
                 method: 'POST',
