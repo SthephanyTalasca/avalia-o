@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avaliação de Reunião (Gemini 1.5 Flash)</title>
+    <title>Avaliação de Reunião (Gemini 2.5 Flash Lite)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,13 +29,13 @@
     <div class="container mx-auto p-4 md:p-8">
         <header class="text-center mb-8">
             <h1 class="text-4xl font-bold text-primary">Avaliação de Reunião</h1>
-            <p class="text-lg text-gray-600 mt-2">Versão Local (Modelo: Gemini 1.5 Flash)</p>
+            <p class="text-lg text-gray-600 mt-2">Versão Local (Modelo: Gemini 2.5 Flash Lite)</p>
         </header>
 
         <main>
-            <div class="bg-indigo-50 p-4 rounded-lg shadow-sm border border-indigo-200 mb-6 text-center">
-                <p class="text-sm text-indigo-800 font-bold">⚠️ CONFIGURAÇÃO:</p>
-                <p class="text-xs text-indigo-700">Edite este arquivo e cole sua API Key onde diz <b>"COLE_SUA_API_KEY_AQUI"</b>.</p>
+            <div class="bg-purple-50 p-4 rounded-lg shadow-sm border border-purple-200 mb-6 text-center">
+                <p class="text-sm text-purple-800 font-bold">⚠️ CONFIGURAÇÃO:</p>
+                <p class="text-xs text-purple-700">Edite este arquivo e cole sua API Key onde diz <b>"COLE_SUA_API_KEY_AQUI"</b>.</p>
             </div>
 
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200">
@@ -62,7 +62,7 @@
 
                 <div class="mt-8 text-center">
                     <button id="analyze-btn" class="bg-primary text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all" disabled>
-                        Executar Análise
+                        Executar Análise (2.5 Lite)
                     </button>
                 </div>
             </div>
@@ -74,8 +74,8 @@
                     <div id="loading-spinner" class="flex justify-center items-center my-16 hidden">
                         <div class="loader"></div>
                         <div class="ml-4">
-                            <p class="text-gray-800 font-medium">Analisando com Gemini 1.5 Flash...</p>
-                            <p class="text-gray-500 text-sm">Isso pode levar alguns segundos.</p>
+                            <p class="text-gray-800 font-medium">Analisando com Gemini 2.5 Flash Lite...</p>
+                            <p class="text-gray-500 text-sm">Processando dados...</p>
                         </div>
                     </div>
 
@@ -99,7 +99,7 @@
                 </div>
             </div>
         </main>
-        <footer class="text-center mt-12 text-gray-500 text-sm"><p>&copy; 2025 Avaliação de CS (Local).</p></footer>
+        <footer class="text-center mt-12 text-gray-500 text-sm"><p>&copy; 2026 Avaliação de CS (Local).</p></footer>
     </div>
 
 <script>
@@ -141,8 +141,6 @@
     
     fileDropZone.addEventListener('click', () => fileInput.click());
     fileDropZone.addEventListener('dragover', (e) => { e.preventDefault(); fileDropZone.classList.add('dragover'); });
-    
-    // CORREÇÃO: O erro do botão estava aqui antes, agora está 100% limpo
     fileDropZone.addEventListener('dragleave', () => fileDropZone.classList.remove('dragover')); 
     
     fileDropZone.addEventListener('drop', (e) => { 
@@ -163,7 +161,6 @@
         const hasFiles = uploadedFiles.length > 0;
         const hasCsName = csNameInput.value.trim().length > 0;
         
-        // Se tiver nome E (texto OU arquivos), libera o botão
         if (hasCsName && (hasText || hasFiles)) {
             analyzeBtn.disabled = false;
             analyzeBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
@@ -212,13 +209,12 @@
     }
 
     // ==========================================
-    // LÓGICA DE ANÁLISE (Backend no Frontend)
+    // LÓGICA DE ANÁLISE
     // ==========================================
     async function handleAnalysis() {
         if (!GOOGLE_API_KEY || GOOGLE_API_KEY.includes("COLE_SUA_API_KEY")) {
             alert("ERRO: Você esqueceu de configurar a API KEY no código HTML.");
             loadingSpinner.classList.add('hidden');
-            // Reativa o botão para o usuário poder tentar de novo após corrigir
             checkAnalysisButtonState(); 
             return;
         }
@@ -240,7 +236,7 @@
 
             if (!combinedTranscript) throw new Error("Sem texto para analisar.");
 
-            // Definição do Schema para JSON Estruturado
+            // Schema para JSON
             const schema = {
                 type: "OBJECT",
                 properties: {
@@ -307,7 +303,7 @@
                 required: ["notaGeral", "evaluation", "speakingTime", "profileAnalysis", "summary", "cancellationAlert", "meetingHighlight", "opportunities"]
             };
             
-            // Prompt Otimizado
+            // Prompt
             const prompt = `
             Você é um especialista sênior em QA de Customer Success.
             Analise a transcrição abaixo da reunião do CS "${csName}".
@@ -321,8 +317,8 @@
             ${combinedTranscript}
             `;
 
-            // === 🚀 URL CORRIGIDA PARA GEMINI 1.5 FLASH (O MAIS COMPATÍVEL) ===
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
+            // === 🚀 URL ATUALIZADA PARA GEMINI 2.5 FLASH LITE ===
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GOOGLE_API_KEY}`;
             
             const response = await fetch(url, {
                 method: 'POST',
@@ -332,7 +328,7 @@
                     generationConfig: {
                         response_mime_type: "application/json",
                         response_schema: schema,
-                        temperature: 0.2 // Baixa temperatura para análise consistente
+                        temperature: 0.2
                     }
                 })
             });
@@ -372,7 +368,6 @@
         displayGeneralScore(data.notaGeral);
         displayCancellationAlert(data.cancellationAlert);
         
-        // Relatório Detalhado
         const sortedEval = [...data.evaluation].sort((a, b) => b.nota - a.nota);
         detailedReport.innerHTML = '<h3 class="text-xl font-semibold mb-4 text-primary">Avaliação Detalhada</h3>';
         
@@ -393,7 +388,6 @@
             detailedReport.appendChild(div);
         });
 
-        // Gráfico Radar
         const validRadar = data.evaluation.filter(i => i.nota !== -1);
         if (radarChartInstance) radarChartInstance.destroy();
         radarChartInstance = new Chart(radarChartCanvas, {
@@ -423,6 +417,7 @@
         displaySummary(data.summary);
         
         analysisResults.classList.remove('hidden');
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function displayGeneralScore(score) {
