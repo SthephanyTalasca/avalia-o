@@ -35,7 +35,7 @@
         <main>
             <div class="bg-indigo-50 p-4 rounded-lg shadow-sm border border-indigo-200 mb-6 text-center">
                 <p class="text-sm text-indigo-800 font-bold">⚠️ CONFIGURAÇÃO:</p>
-                <p class="text-xs text-indigo-700">Edite este arquivo e cole sua API Key onde diz <b>"AIzaSyCExjPtB-AaKINmNUuXq7UFmHgyDui16So"</b>.</p>
+                <p class="text-xs text-indigo-700">Edite este arquivo e cole sua API Key onde diz <b>"COLE_SUA_API_KEY_AQUI"</b>.</p>
             </div>
 
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200">
@@ -61,7 +61,7 @@
                 </div>
 
                 <div class="mt-8 text-center">
-                    <button id="analyze-btn" class="bg-primary text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                    <button id="analyze-btn" class="bg-primary text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all" disabled>
                         Executar Análise Profunda
                     </button>
                 </div>
@@ -75,7 +75,7 @@
                         <div class="loader"></div>
                         <div class="ml-4">
                             <p class="text-gray-800 font-medium">Analisando com Gemini 1.5 Pro...</p>
-                            <p class="text-gray-500 text-sm">Isso pode levar de 10 a 30 segundos devido à profundidade da análise.</p>
+                            <p class="text-gray-500 text-sm">Isso pode levar de 10 a 30 segundos.</p>
                         </div>
                     </div>
 
@@ -107,7 +107,7 @@
     // ⚠️ CONFIGURAÇÃO OBRIGATÓRIA ⚠️
     // Substitua o texto abaixo pela sua chave de API do Google AI Studio
     // =================================================================
-    const GOOGLE_API_KEY = "COLE_SUA_API_KEY_AQUI"; 
+    const GOOGLE_API_KEY = "AIzaSyCExjPtB-AaKINmNUuXq7UFmHgyDui16So"; 
     // =================================================================
 
     const csNameInput = document.getElementById('cs-name-input');
@@ -141,7 +141,9 @@
     
     fileDropZone.addEventListener('click', () => fileInput.click());
     fileDropZone.addEventListener('dragover', (e) => { e.preventDefault(); fileDropZone.classList.add('dragover'); });
-    fileDropZone.addEventListener('dragleave', () => fileDropZone.classList.remove('dragover'); });
+    // CORREÇÃO: O erro estava nesta linha abaixo, removi o }); extra
+    fileDropZone.addEventListener('dragleave', () => fileDropZone.classList.remove('dragover')); 
+    
     fileDropZone.addEventListener('drop', (e) => { 
         e.preventDefault(); 
         fileDropZone.classList.remove('dragover'); 
@@ -159,7 +161,17 @@
         const hasText = transcriptInput.value.trim().length > 0;
         const hasFiles = uploadedFiles.length > 0;
         const hasCsName = csNameInput.value.trim().length > 0;
-        analyzeBtn.disabled = !(hasCsName && (hasText || hasFiles));
+        
+        // Se tiver nome E (texto OU arquivos), libera o botão
+        if (hasCsName && (hasText || hasFiles)) {
+            analyzeBtn.disabled = false;
+            analyzeBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+            analyzeBtn.classList.add('bg-primary', 'hover:opacity-90');
+        } else {
+            analyzeBtn.disabled = true;
+            analyzeBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            analyzeBtn.classList.remove('bg-primary', 'hover:opacity-90');
+        }
     }
 
     function handleFiles(files) {
@@ -204,6 +216,8 @@
     async function handleAnalysis() {
         if (!GOOGLE_API_KEY || GOOGLE_API_KEY.includes("COLE_SUA_API_KEY")) {
             alert("ERRO: Você esqueceu de configurar a API KEY no código HTML.");
+            loadingSpinner.classList.add('hidden');
+            analyzeBtn.disabled = false;
             return;
         }
 
