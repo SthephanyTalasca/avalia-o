@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avaliação de Reunião (Local - Gemini Pro)</title>
+    <title>Avaliação de Reunião (Gemini 1.5 Pro)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,13 +29,13 @@
     <div class="container mx-auto p-4 md:p-8">
         <header class="text-center mb-8">
             <h1 class="text-4xl font-bold text-primary">Avaliação de Reunião</h1>
-            <p class="text-lg text-gray-600 mt-2">Versão Local (Modelo Gemini Pro)</p>
+            <p class="text-lg text-gray-600 mt-2">Versão Local (Modelo: Gemini 1.5 Pro)</p>
         </header>
 
         <main>
-            <div class="bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-200 mb-6 text-center">
-                <p class="text-sm text-blue-800 font-bold">⚠️ INSTRUÇÃO:</p>
-                <p class="text-xs text-blue-700">Abra este arquivo no bloco de notas e cole sua chave onde diz "COLE_SUA_API_KEY_AQUI".</p>
+            <div class="bg-indigo-50 p-4 rounded-lg shadow-sm border border-indigo-200 mb-6 text-center">
+                <p class="text-sm text-indigo-800 font-bold">⚠️ CONFIGURAÇÃO:</p>
+                <p class="text-xs text-indigo-700">Edite este arquivo e cole sua API Key onde diz <b>"AIzaSyCExjPtB-AaKINmNUuXq7UFmHgyDui16So"</b>.</p>
             </div>
 
             <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200">
@@ -43,7 +43,7 @@
                 
                 <div class="mb-6">
                     <label class="block text-lg font-medium text-gray-700 mb-2">Nome do CS</label>
-                    <input type="text" id="cs-name-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 ring-primary" placeholder="Nome do CS">
+                    <input type="text" id="cs-name-input" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 ring-primary" placeholder="Nome do CS avaliado">
                 </div>
 
                 <div class="mb-6">
@@ -55,25 +55,28 @@
                     <label class="block text-lg font-medium text-gray-700 mb-2">Arquivos (.txt)</label>
                     <div id="file-drop-zone" class="relative w-full p-8 text-center rounded-lg cursor-pointer">
                         <input type="file" id="file-input" multiple accept=".txt" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                        <p class="text-gray-600">Arraste arquivos ou <span class="font-semibold text-primary">clique aqui</span></p>
+                        <p class="text-gray-600">Arraste arquivos .txt ou <span class="font-semibold text-primary">clique aqui</span></p>
                     </div>
                     <div id="file-list" class="mt-4 space-y-2"></div>
                 </div>
 
                 <div class="mt-8 text-center">
                     <button id="analyze-btn" class="bg-primary text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
-                        Analisar Agora
+                        Executar Análise Profunda
                     </button>
                 </div>
             </div>
 
             <div id="results-section" class="mt-10 hidden">
                 <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200">
-                    <h2 class="text-2xl font-semibold mb-6 text-center text-primary">2. Relatório</h2>
+                    <h2 class="text-2xl font-semibold mb-6 text-center text-primary">2. Relatório de Performance</h2>
                     
                     <div id="loading-spinner" class="flex justify-center items-center my-16 hidden">
                         <div class="loader"></div>
-                        <p id="loading-text" class="ml-4 text-gray-600">Conectando ao Google Gemini...</p>
+                        <div class="ml-4">
+                            <p class="text-gray-800 font-medium">Analisando com Gemini 1.5 Pro...</p>
+                            <p class="text-gray-500 text-sm">Isso pode levar de 10 a 30 segundos devido à profundidade da análise.</p>
+                        </div>
                     </div>
 
                     <div id="error-message" class="hidden text-center my-8 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg"></div>
@@ -83,8 +86,8 @@
                         <div id="cancellation-alert-section" class="mb-8 hidden"></div>
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                             <div class="flex flex-col space-y-8">
-                                <div><h3 class="text-xl font-semibold mb-4 text-center">Radar de Habilidades</h3><div class="relative h-96"><canvas id="radar-chart"></canvas></div></div>
-                                <div><h3 class="text-xl font-semibold mb-4 text-center">Tempo de Fala</h3><div id="speaking-time-analysis" class="px-4"></div></div>
+                                <div><h3 class="text-xl font-semibold mb-4 text-center">Radar de Competências</h3><div class="relative h-96"><canvas id="radar-chart"></canvas></div></div>
+                                <div><h3 class="text-xl font-semibold mb-4 text-center">Distribuição de Fala</h3><div id="speaking-time-analysis" class="px-4"></div></div>
                             </div>
                             <div id="detailed-report" class="lg:col-span-1 space-y-4"></div>
                         </div>
@@ -96,14 +99,15 @@
                 </div>
             </div>
         </main>
-        <footer class="text-center mt-12 text-gray-500 text-sm"><p>&copy; 2025 Avaliação Local.</p></footer>
+        <footer class="text-center mt-12 text-gray-500 text-sm"><p>&copy; 2025 Avaliação de CS (Local).</p></footer>
     </div>
 
 <script>
     // =================================================================
-    // CONFIGURAÇÃO MANUAL - COLOQUE SUA CHAVE AQUI
+    // ⚠️ CONFIGURAÇÃO OBRIGATÓRIA ⚠️
+    // Substitua o texto abaixo pela sua chave de API do Google AI Studio
     // =================================================================
-    const GOOGLE_API_KEY = "AIzaSyCExjPtB-AaKINmNUuXq7UFmHgyDui16So"; 
+    const GOOGLE_API_KEY = "COLE_SUA_API_KEY_AQUI"; 
     // =================================================================
 
     const csNameInput = document.getElementById('cs-name-input');
@@ -114,11 +118,10 @@
     const fileList = document.getElementById('file-list');
     const resultsSection = document.getElementById('results-section');
     const loadingSpinner = document.getElementById('loading-spinner');
-    const loadingText = document.getElementById('loading-text');
     const analysisResults = document.getElementById('analysis-results');
     const errorMessage = document.getElementById('error-message');
     
-    // Elementos de exibição
+    // Elementos de UI
     const detailedReport = document.getElementById('detailed-report');
     const radarChartCanvas = document.getElementById('radar-chart');
     const speakingTimeAnalysis = document.getElementById('speaking-time-analysis');
@@ -138,7 +141,7 @@
     
     fileDropZone.addEventListener('click', () => fileInput.click());
     fileDropZone.addEventListener('dragover', (e) => { e.preventDefault(); fileDropZone.classList.add('dragover'); });
-    fileDropZone.addEventListener('dragleave', () => fileDropZone.classList.remove('dragover'));
+    fileDropZone.addEventListener('dragleave', () => fileDropZone.classList.remove('dragover'); });
     fileDropZone.addEventListener('drop', (e) => { 
         e.preventDefault(); 
         fileDropZone.classList.remove('dragover'); 
@@ -196,15 +199,15 @@
     }
 
     // ==========================================
-    // LÓGICA DE ANÁLISE (DIRETO NO NAVEGADOR)
+    // LÓGICA DE ANÁLISE (Backend no Frontend)
     // ==========================================
     async function handleAnalysis() {
-        if (!GOOGLE_API_KEY || GOOGLE_API_KEY === "COLE_SUA_API_KEY_AQUI") {
+        if (!GOOGLE_API_KEY || GOOGLE_API_KEY.includes("COLE_SUA_API_KEY")) {
             alert("ERRO: Você esqueceu de configurar a API KEY no código HTML.");
             return;
         }
 
-        // 2. Preparar UI
+        // Resetar UI
         analysisResults.classList.add('hidden');
         errorMessage.classList.add('hidden');
         loadingSpinner.classList.remove('hidden');
@@ -221,19 +224,89 @@
 
             if (!combinedTranscript) throw new Error("Sem texto para analisar.");
 
-            const schema = { type: "OBJECT", properties: { "notaGeral": { "type": "NUMBER" }, "evaluation": { type: "ARRAY", items: { type: "OBJECT", properties: { "criterio": { "type": "STRING" }, "nota": { "type": "NUMBER" }, "justificativa": { "type": "STRING" } }, required: ["criterio", "nota", "justificativa"] } }, "speakingTime": { type: "OBJECT", properties: { "cs": { "type": "NUMBER" }, "client": { "type": "NUMBER" } }, required: ["cs", "client"] }, "profileAnalysis": { type: "OBJECT", properties: { "profile": { "type": "STRING" }, "handling": { "type": "STRING" }, "suggestions": { "type": "STRING" } }, required: ["profile", "handling", "suggestions"] }, "summary": { type: "OBJECT", properties: { "geral": { "type": "STRING" }, "specificErrors": { "type": "ARRAY", "items": { "type": "STRING" } }, "sugestoes": { "type": "ARRAY", items: { "type": "STRING" } } }, required: ["geral", "specificErrors", "sugestoes"] }, "cancellationAlert": { type: "OBJECT", properties: { "risk": { "type": "BOOLEAN" }, "reason": { "type": "STRING" } }, required: ["risk", "reason"] }, "meetingHighlight": { "type": "STRING" }, "opportunities": { type: "ARRAY", items: { type: "OBJECT", properties: { "product": { "type": "STRING" }, "reason": { "type": "STRING" } }, required: ["product", "reason"] } } }, required: ["notaGeral", "evaluation", "speakingTime", "profileAnalysis", "summary", "cancellationAlert", "meetingHighlight", "opportunities"] };
+            // Definição do Schema para JSON Estruturado (Otimizado para Gemini 1.5 Pro)
+            const schema = {
+                type: "OBJECT",
+                properties: {
+                    notaGeral: { type: "NUMBER" },
+                    evaluation: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                criterio: { type: "STRING" },
+                                nota: { type: "NUMBER" },
+                                justificativa: { type: "STRING" }
+                            },
+                            required: ["criterio", "nota", "justificativa"]
+                        }
+                    },
+                    speakingTime: {
+                        type: "OBJECT",
+                        properties: {
+                            cs: { type: "NUMBER" },
+                            client: { type: "NUMBER" }
+                        },
+                        required: ["cs", "client"]
+                    },
+                    profileAnalysis: {
+                        type: "OBJECT",
+                        properties: {
+                            profile: { type: "STRING" },
+                            handling: { type: "STRING" },
+                            suggestions: { type: "STRING" }
+                        },
+                        required: ["profile", "handling", "suggestions"]
+                    },
+                    summary: {
+                        type: "OBJECT",
+                        properties: {
+                            geral: { type: "STRING" },
+                            specificErrors: { type: "ARRAY", items: { type: "STRING" } },
+                            sugestoes: { type: "ARRAY", items: { type: "STRING" } }
+                        },
+                        required: ["geral", "specificErrors", "sugestoes"]
+                    },
+                    cancellationAlert: {
+                        type: "OBJECT",
+                        properties: {
+                            risk: { type: "BOOLEAN" },
+                            reason: { type: "STRING" }
+                        },
+                        required: ["risk", "reason"]
+                    },
+                    meetingHighlight: { type: "STRING" },
+                    opportunities: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                product: { type: "STRING" },
+                                reason: { type: "STRING" }
+                            },
+                            required: ["product", "reason"]
+                        }
+                    }
+                },
+                required: ["notaGeral", "evaluation", "speakingTime", "profileAnalysis", "summary", "cancellationAlert", "meetingHighlight", "opportunities"]
+            };
             
+            // Prompt Otimizado
             const prompt = `
-                Analise a reunião do CS "${csName}".
-                Seja rigoroso. Nota padrão começa em 1. Só suba se houver provas.
-                Use JSON puro.
-                ---
-                TRANSCRIÇÃO:
-                ${combinedTranscript}
+            Você é um especialista sênior em QA de Customer Success.
+            Analise a transcrição abaixo da reunião do CS "${csName}".
+            
+            REGRAS CRÍTICAS:
+            1. Comece assumindo nota 1. A nota só sobe com evidências claras.
+            2. Se o cliente não fez objeções, a nota de 'Objeções' é -1.
+            3. Seja implacável. Notas 9 ou 10 exigem perfeição estratégica.
+            
+            TRANSCRIÇÃO:
+            ${combinedTranscript}
             `;
 
-            // ### MUDANÇA AQUI: Trocado para 'gemini-pro' ###
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GOOGLE_API_KEY}`;
+            // === 🚀 URL CORRIGIDA PARA GEMINI 1.5 PRO ===
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GOOGLE_API_KEY}`;
             
             const response = await fetch(url, {
                 method: 'POST',
@@ -242,17 +315,23 @@
                     contents: [{ parts: [{ text: prompt }] }],
                     generationConfig: {
                         response_mime_type: "application/json",
-                        response_schema: schema
+                        response_schema: schema,
+                        temperature: 0.2 // Baixa temperatura para análise consistente
                     }
                 })
             });
 
             if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error?.message || "Erro na API do Google");
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.error?.message || `Erro API (${response.status})`);
             }
 
             const data = await response.json();
+            
+            if (!data.candidates || !data.candidates[0].content) {
+                throw new Error("A API retornou vazio (possível bloqueio de segurança).");
+            }
+
             const textResult = data.candidates[0].content.parts[0].text;
             const jsonResult = JSON.parse(textResult);
 
@@ -279,7 +358,7 @@
         
         // Relatório Detalhado
         const sortedEval = [...data.evaluation].sort((a, b) => b.nota - a.nota);
-        detailedReport.innerHTML = '<h3 class="text-xl font-semibold mb-4">Avaliação Detalhada</h3>';
+        detailedReport.innerHTML = '<h3 class="text-xl font-semibold mb-4 text-primary">Avaliação Detalhada</h3>';
         
         sortedEval.forEach(item => {
             const isNA = item.nota === -1;
@@ -289,7 +368,7 @@
             const div = document.createElement('div');
             div.className = 'p-4 border border-gray-200 rounded-lg bg-gray-50';
             div.innerHTML = `
-                <div class="flex justify-between">
+                <div class="flex justify-between items-center">
                     <h4 class="font-semibold ${isNA ? 'text-gray-400 line-through' : 'text-gray-800'}">${item.criterio}</h4>
                     <div>${scoreDisplay}</div>
                 </div>
@@ -310,7 +389,8 @@
                     data: validRadar.map(i => i.nota),
                     backgroundColor: 'rgba(0, 45, 114, 0.2)',
                     borderColor: '#002d72',
-                    borderWidth: 2
+                    borderWidth: 2,
+                    pointBackgroundColor: '#002d72'
                 }]
             },
             options: { 
@@ -343,9 +423,12 @@
         cancellationAlertSection.innerHTML = '';
         if (alert && alert.risk) {
             cancellationAlertSection.innerHTML = `
-                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
-                    <p class="font-bold">⚠️ Risco de Cancelamento Detectado</p>
-                    <p class="text-sm">${alert.reason}</p>
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg flex items-start">
+                    <span class="text-2xl mr-3">🚨</span>
+                    <div>
+                        <p class="font-bold">Risco de Cancelamento Detectado!</p>
+                        <p class="text-sm mt-1">${alert.reason}</p>
+                    </div>
                 </div>`;
             cancellationAlertSection.classList.remove('hidden');
         } else {
@@ -360,34 +443,57 @@
         const cliPct = 100 - csPct;
         
         speakingTimeAnalysis.innerHTML = `
-            <div class="flex justify-between text-sm mb-1"><span>CS (${Math.round(csPct)}%)</span><span>Cliente (${Math.round(cliPct)}%)</span></div>
-            <div class="w-full h-4 rounded-full flex overflow-hidden">
-                <div class="bg-primary h-full" style="width:${csPct}%"></div>
-                <div class="bg-secondary-pink h-full" style="width:${cliPct}%"></div>
+            <div class="flex justify-between text-sm mb-1 font-medium">
+                <span class="text-primary">CS (${Math.round(csPct)}%)</span>
+                <span class="text-secondary-pink">Cliente (${Math.round(cliPct)}%)</span>
+            </div>
+            <div class="w-full h-4 rounded-full flex overflow-hidden bg-gray-200">
+                <div class="bg-primary h-full transition-all duration-1000" style="width:${csPct}%"></div>
+                <div class="bg-secondary-pink h-full transition-all duration-1000" style="width:${cliPct}%"></div>
             </div>`;
     }
 
     function displayHighlight(text) {
         if (!text) return;
-        highlightSection.innerHTML = `<h3 class="text-2xl font-bold text-center text-primary">Ponto Alto</h3><div class="mt-4 bg-green-50 p-4 rounded-lg text-gray-700">${text}</div>`;
+        highlightSection.innerHTML = `
+            <h3 class="text-2xl font-bold text-center text-primary">Ponto Alto da Reunião</h3>
+            <div class="mt-6 bg-green-50 p-6 rounded-lg text-gray-700 border border-green-100">
+                <p>💡 ${text}</p>
+            </div>`;
     }
 
     function displayOpportunities(opps) {
         if (!opps || opps.length === 0) { opportunitiesSection.classList.add('hidden'); return; }
-        opportunitiesSection.innerHTML = `<h3 class="text-2xl font-bold text-center text-primary">Oportunidades</h3><div class="mt-4 space-y-2">
-            ${opps.map(o => `<div class="p-3 bg-blue-50 border border-blue-100 rounded"><b>${o.product}:</b> ${o.reason}</div>`).join('')}
-        </div>`;
+        opportunitiesSection.innerHTML = `
+            <h3 class="text-2xl font-bold text-center text-primary">Oportunidades de Venda</h3>
+            <div class="mt-6 grid gap-4">
+                ${opps.map(o => `
+                    <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                        <p class="font-bold text-blue-900">📦 ${o.product}</p>
+                        <p class="text-sm text-blue-700 mt-1">${o.reason}</p>
+                    </div>
+                `).join('')}
+            </div>`;
         opportunitiesSection.classList.remove('hidden');
     }
 
     function displayProfile(prof) {
         if (!prof) return;
         profileAnalysisSection.innerHTML = `
-            <h3 class="text-2xl font-bold text-center text-primary">Perfil do Cliente</h3>
-            <div class="mt-4 bg-yellow-50 p-4 rounded-lg">
-                <p><b>Perfil:</b> ${prof.profile}</p>
-                <p class="mt-2"><b>Manejo do CS:</b> ${prof.handling}</p>
-                <p class="mt-2"><b>Dica:</b> ${prof.suggestions}</p>
+            <h3 class="text-2xl font-bold text-center text-primary">Análise de Perfil</h3>
+            <div class="mt-6 bg-yellow-50 p-6 rounded-lg border border-yellow-100">
+                <div class="mb-4">
+                    <p class="text-xs text-yellow-600 font-bold uppercase tracking-wider">Perfil Identificado</p>
+                    <p class="text-lg font-medium text-gray-800">${prof.profile}</p>
+                </div>
+                <div class="mb-4">
+                    <p class="text-xs text-yellow-600 font-bold uppercase tracking-wider">Como o CS Lidou</p>
+                    <p class="text-gray-700 text-sm">${prof.handling}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-yellow-600 font-bold uppercase tracking-wider">Dica de Ouro</p>
+                    <p class="text-gray-700 text-sm italic">"${prof.suggestions}"</p>
+                </div>
             </div>`;
     }
 
@@ -395,12 +501,23 @@
         if (!sum) return;
         summarySection.innerHTML = `
             <h3 class="text-2xl font-bold text-center text-primary">Plano de Ação</h3>
-            <div class="mt-4 bg-gray-50 p-6 rounded-lg">
-                <p class="mb-4">${sum.geral}</p>
-                <h4 class="font-bold text-red-600">Melhorar:</h4>
-                <ul class="list-disc pl-5 mb-4">${sum.specificErrors.map(e => `<li>${e}</li>`).join('')}</ul>
-                <h4 class="font-bold text-green-600">Sugestões:</h4>
-                <ul class="list-disc pl-5">${sum.sugestoes.map(s => `<li>${s}</li>`).join('')}</ul>
+            <div class="mt-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <p class="mb-6 text-gray-700 leading-relaxed">${sum.geral}</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-red-600 mb-2 flex items-center">📉 Pontos de Atenção</h4>
+                        <ul class="space-y-2">
+                            ${sum.specificErrors.map(e => `<li class="flex items-start text-sm text-gray-700"><span class="mr-2">•</span>${e}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-green-600 mb-2 flex items-center">🚀 Ações Recomendadas</h4>
+                        <ul class="space-y-2">
+                            ${sum.sugestoes.map(s => `<li class="flex items-start text-sm text-gray-700"><span class="mr-2">•</span>${s}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
             </div>`;
     }
 </script>
